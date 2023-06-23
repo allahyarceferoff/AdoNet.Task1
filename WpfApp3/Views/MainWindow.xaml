@@ -67,7 +67,7 @@
     </Window.Resources>
     <Canvas>
         <GroupBox FontSize="20"  Background="CadetBlue" Header="" Height="371" Width="670" Canvas.Left="14" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-
+        <ListBox ItemsSource="{Binding AllAuthors, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="275" Width="288" Canvas.Left="330" Canvas.Top="62" HorizontalAlignment="Left" VerticalAlignment="Center"></ListBox>
 
         <Label FontSize="15" Content="Id" Canvas.Left="169" Canvas.Top="21" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.95,-0.004"></Label>
         <Label FontSize="15" Content="FirstName" Canvas.Left="142" Canvas.Top="78" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
@@ -75,7 +75,6 @@
         <TextBox Text="{Binding Id, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="15" Canvas.Left="156" Canvas.Top="51" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50"></TextBox>
         <TextBox Text="{Binding Firstname, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="15" Canvas.Left="128" Canvas.Top="107" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104"></TextBox>
         <TextBox Text="{Binding Lastname, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="15" Canvas.Left="124" Canvas.Top="160" HorizontalAlignment="Left" VerticalAlignment="Top" Width="108"></TextBox>
-        <DataGrid ItemsSource="{Binding AutorSet.Tables[0].DefaultView,UpdateSourceTrigger=PropertyChanged}" Canvas.Left="349" Canvas.Top="51" Height="305" Width="297" HorizontalAlignment="Left" VerticalAlignment="Center"></DataGrid>
 
         <Button Command="{Binding ShowAllCommand}"   Background="DarkViolet"  Style="{DynamicResource ButtonStyle1}" Height="46" Width="204" Canvas.Left="78" Canvas.Top="200" FontSize="20" Content="Show All" HorizontalAlignment="Left" VerticalAlignment="Top">
 
@@ -86,6 +85,6 @@
         </Button>
 
 
-        
+
     </Canvas>
 </Window>

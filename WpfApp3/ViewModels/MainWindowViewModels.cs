@@ -15,7 +15,16 @@ namespace WpfApp3.ViewModels
 {
     public class MainWindowViewModels : BaseViewModel
     {
-        public DataSet AutorSet { get; set; } = new DataSet();
+
+        private ObservableCollection<Author> allAuthors;
+
+        public ObservableCollection<Author> AllAuthors
+        {
+            get { return allAuthors; }
+            set { allAuthors = value; }
+        }
+
+
 
         public Repo AuthorsRepo { get; set; }
         public RelayCommand InsertCommand { get; set; }
@@ -48,16 +57,25 @@ namespace WpfApp3.ViewModels
         }
 
 
+
+
         public MainWindowViewModels()
         {
             AuthorsRepo = new Repo();
-            AutorSet = AuthorsRepo.GetAll();
-            
+            AllAuthors = AuthorsRepo.GetAll();
 
             InsertCommand = new RelayCommand((obj) =>
             {
                 AuthorsRepo.Insert(Id, Firstname, Lastname);
             });
+
+            //ShowAllCommand = new RelayCommand((obj) =>
+            //{
+            //    AllAuthors = AuthorsRepo.GetAll();
+            //});
+
+
+
 
         }
     }

@@ -9,76 +9,111 @@ using System.Text;
 using System.Threading.Tasks;
 using WpfApp3.Models;
 
+
+
 namespace WpfApp3.Repository
 {
     public class Repo
     {
+        ObservableCollection<Author> _authors = new ObservableCollection<Author>();
         SqlConnection conn;
         string cs = ConfigurationManager.ConnectionStrings["myConn"].ConnectionString;
-        DataSet set = new DataSet();
+
+
 
         public Repo()
         {
-            conn = new SqlConnection();
-
             using (conn = new SqlConnection())
             {
-                var da = new SqlDataAdapter();
                 conn.ConnectionString = cs;
                 conn.Open();
 
-                SqlCommand command = new SqlCommand("SELECT * FROM Authors", conn);
 
-                da.SelectCommand = command;
-                da.Fill(set, "AuthorsSet");
+
+                SqlDataReader reader = null;
+
+
+
+                string query = "SELECT * FROM Authors";
+                using (var command = new SqlCommand(query, conn))
+                {
+                    reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Author author = new Author
+                        {
+                            Id = int.Parse(reader[0].ToString()),
+                            FirstName = reader[1].ToString(),
+                            LastName = reader[2].ToString()
+                        };
+                        _authors.Add(author);
+                    }
+                }
             }
         }
 
-        public DataSet GetAll()
+
+
+        public ObservableCollection<Author> GetAll()
         {
-            return set;
+            return _authors;
         }
+
+
 
         public void Insert(int id, string firstName, string lastName)
         {
-            using (conn = new SqlConnection())
+            using (var conn = new SqlConnection())
             {
-                var command = new SqlCommand("INSERT INTO Authors(Id,FirstName,LastName) VALUES(@id,@firstName,@lastName)", conn);
                 conn.ConnectionString = cs;
                 conn.Open();
 
-                command.Parameters.Add(new SqlParameter
+
+
+
+                string query = $@" INSERT INTO Authors(Id,FirstName,LastName)
+                                VALUES(@id,@firstName,@lastName)";
+
+
+
+                var paramId = new SqlParameter();
+                paramId.ParameterName = "@id";
+                paramId.SqlDbType = SqlDbType.Int;
+                paramId.Value = id;
+
+
+
+                var paramName = new SqlParameter();
+                paramName.ParameterName = "@firstName";
+                paramName.SqlDbType = SqlDbType.NVarChar;
+                paramName.Value = firstName;
+
+
+
+                var paramSurname = new SqlParameter();
+                paramSurname.ParameterName = "@lastName";
+                paramSurname.SqlDbType = SqlDbType.NVarChar;
+                paramSurname.Value = lastName;
+
+
+
+                using (var command = new SqlCommand(query, conn))
                 {
-                    DbType = DbType.Int32,
-                    ParameterName = "@id",
-                    Value = id
-                });
+                    command.Parameters.Add(paramId);
+                    command.Parameters.Add(paramName);
+                    command.Parameters.Add(paramSurname);
 
-                command.Parameters.Add(new SqlParameter
+
+
+                    var result = command.ExecuteNonQuery();
+                }
+                Author author = new Author
                 {
-                    SqlDbType = SqlDbType.NVarChar,
-                    ParameterName = "@firstName",
-                    Value = firstName
-                });
-                
-                command.Parameters.Add(new SqlParameter
-                {
-                    SqlDbType = SqlDbType.NVarChar,
-                    ParameterName = "@lastName",
-                    Value = lastName
-                });
-
-                var da = new SqlDataAdapter();
-                da.InsertCommand= command;
-                da.InsertCommand.ExecuteNonQuery();
-                da.Update(set, "AuthorsSet");
-                set.Clear();
-
-                da = new SqlDataAdapter("SELECT * FROM Authors", conn);
-
-                da.Fill(set, "AuthorsSet");
-
-
+                    Id = id,
+                    FirstName = firstName,
+                    LastName = lastName
+                };
+                _authors.Add(author);
             }
         }
     }
